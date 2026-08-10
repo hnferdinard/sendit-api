@@ -7,7 +7,8 @@ class Document(SQLModel, table=True):
     original_filename: str
     file_size: int
     file_type: str
-    status: str = Field(default="uploaded")  # "uploaded", "processing", "enriched", "failed"
+    status: str = Field(default="uploaded")
+    version: int = Field(default=1)  # <-- This is the version field
     # Location data
     city: str = Field(index=True)
     country: str = Field(default="Kenya")

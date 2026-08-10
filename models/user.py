@@ -8,19 +8,18 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True, index=True)
     hashed_password: str
     full_name: str = Field(min_length=2, max_length=100)
-    role: str = Field(default="staff")  # "admin", "manager", "staff"
+    role: str = Field(default="staff")
     is_active: bool = Field(default=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     last_login: Optional[datetime] = None
-    # Relationship: documents uploaded by this user
     documents: List["Document"] = Relationship(back_populates="uploader")
 class UserCreate(SQLModel):
     username: str = Field(min_length=3, max_length=50)
-    email: str = Field(min_length=1)  # Simple email validation
-    password: str = Field(min_length=8)
+    email: str = Field(min_length=1)
+    password: str = Field(min_length=4, max_length=72)
     full_name: str = Field(min_length=2, max_length=100)
-    role: str = Field(default="staff")
+    role: Optional[str] = Field(default="staff")
 class UserLogin(SQLModel):
     username: str
     password: str

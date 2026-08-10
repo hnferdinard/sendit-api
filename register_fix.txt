@@ -1,6 +1,9 @@
 ﻿@app.post("/register")
 async def register(user_data: UserCreate, session: Session = Depends(get_session)):
     try:
+        # Validate role
+        if user_data.role not in ["admin", "manager", "staff"]:
+            user_data.role = "staff"  # Default to staff
         # Check if username exists
         existing_user = session.exec(select(User).where(User.username == user_data.username)).first()
         if existing_user:
@@ -9,8 +12,7 @@ async def register(user_data: UserCreate, session: Session = Depends(get_session
         existing_email = session.exec(select(User).where(User.email == user_data.email)).first()
         if existing_email:
             raise HTTPException(400, "Email already registered")
-        # Hash password with proper handling for bcrypt
-        # bcrypt has a 72-byte limit, so we hash it properly
+        # Hash password
         hashed_password = hash_password(user_data.password)
         user = User(
             username=user_data.username,
@@ -26,6 +28,7 @@ async def register(user_data: UserCreate, session: Session = Depends(get_session
             "message": "User registered successfully", 
             "user_id": user.id,
             "username": user.username,
+            "email": user.email,
             "role": user.role
         }
     except HTTPException:
