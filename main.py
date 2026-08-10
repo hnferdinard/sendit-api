@@ -13,13 +13,14 @@ import shutil
 app = FastAPI(
     title="SendIt API",
     version="1.0.0",
-    description="📄 Document Management & Enrichment Service with Weather Integration"
+    description="📄 Document Management & Enrichment Service"
 )
-# Create uploads directory
+# ============ MOUNT STATIC FILES ============
+# This serves your background image from the static folder
+app.mount("/static", StaticFiles(directory="static"), name="static")
+# ============ CREATE UPLOAD DIRECTORY ============
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-# Create static directory
-os.makedirs("static", exist_ok=True)
 # ============ MODELS ============
 class UserRegister(BaseModel):
     username: str
@@ -89,6 +90,93 @@ def create_webhook_payload(document_id: int, status: str, event_type: str):
         "timestamp": datetime.now().isoformat(),
         "message": f"Document {document_id} status changed to {status}"
     }
+# ============ CUSTOM CSS WITH BACKGROUND ============
+custom_css = f"""
+<style>
+    /* Full page background using your image */
+    body {{
+        background-image: url('/static/background.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+    }}
+    /* Make Swagger UI semi-transparent */
+    .swagger-ui {{
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }}
+    /* Top bar styling */
+    .swagger-ui .topbar {{
+        background: rgba(0, 0, 0, 0.7) !important;
+        border-radius: 10px 10px 0 0;
+        padding: 15px !important;
+    }}
+    .swagger-ui .topbar .download-url-wrapper .select-label {{
+        color: #fff !important;
+    }}
+    /* Info section */
+    .swagger-ui .info .title {{
+        color: #1a1a2e !important;
+        text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    }}
+    /* Buttons */
+    .swagger-ui .btn {{
+        border-radius: 8px !important;
+        font-weight: bold !important;
+    }}
+    .swagger-ui .btn.execute {{
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        border: none !important;
+    }}
+    .swagger-ui .btn.execute:hover {{
+        transform: scale(1.05);
+        transition: all 0.3s ease;
+    }}
+    .swagger-ui .btn.try-out__btn {{
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+        color: white !important;
+        border: none !important;
+    }}
+    .swagger-ui .btn.try-out__btn:hover {{
+        transform: scale(1.05);
+        transition: all 0.3s ease;
+    }}
+    /* Response section */
+    .swagger-ui .responses-wrapper {{
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 10px;
+    }}
+    /* Model boxes */
+    .swagger-ui .model-box {{
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+    }}
+</style>
+"""
+# Inject custom CSS into Swagger UI
+app.openapi_url = "/openapi.json"
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    html = app.swagger_ui_html(
+        openapi_url="/openapi.json",
+        title="SendIt API - Document Management",
+        swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+        swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
+        swagger_favicon_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/favicon-32x32.png"
+    )
+    html.body = html.body.replace(
+        '</head>',
+        f'{custom_css}</head>'
+    )
+    return html
 # ============ HEALTH ENDPOINTS ============
 @app.get("/")
 @app.get("/health")
@@ -100,91 +188,6 @@ def health_check():
         "timestamp": datetime.now().isoformat(),
         "uptime": "🚀 Live on Render!"
     }
-# ============ HOME PAGE ============
-@app.get("/home", response_class=HTMLResponse)
-async def home():
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>SendIt API</title>
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            }
-            .container {
-                background: rgba(255, 255, 255, 0.95);
-                padding: 50px;
-                border-radius: 20px;
-                text-align: center;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-                max-width: 600px;
-            }
-            h1 {
-                color: #1a1a2e;
-                font-size: 3em;
-                margin-bottom: 10px;
-            }
-            p {
-                color: #2d3436;
-                font-size: 1.2em;
-                line-height: 1.6;
-            }
-            .btn {
-                display: inline-block;
-                padding: 12px 30px;
-                margin: 10px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                text-decoration: none;
-                border-radius: 30px;
-                font-weight: bold;
-                transition: transform 0.3s;
-            }
-            .btn:hover {
-                transform: scale(1.05);
-            }
-            .btn-health {
-                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            }
-            .features {
-                text-align: left;
-                margin: 20px 0;
-                list-style: none;
-                padding: 0;
-            }
-            .features li {
-                padding: 8px 0;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>📄 SendIt API</h1>
-            <p>Document Management & Enrichment Service</p>
-            <ul class="features">
-                <li>✅ Upload & Manage Documents</li>
-                <li>✅ Weather Data Enrichment</li>
-                <li>✅ Document Search & Versioning</li>
-                <li>✅ Webhook Notifications</li>
-            </ul>
-            <a href="/docs" class="btn">📚 API Documentation</a>
-            <a href="/health" class="btn btn-health">❤️ Health Check</a>
-            <p style="margin-top: 20px; font-size: 0.9em; color: #636e72;">
-                Powered by FastAPI 🚀
-            </p>
-        </div>
-    </body>
-    </html>
-    """
 # ============ AUTHENTICATION ENDPOINTS ============
 @app.post("/register")
 async def register(user: UserRegister):
