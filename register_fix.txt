@@ -1,0 +1,35 @@
+﻿@app.post("/register")
+async def register(user_data: UserCreate, session: Session = Depends(get_session)):
+    try:
+        # Check if username exists
+        existing_user = session.exec(select(User).where(User.username == user_data.username)).first()
+        if existing_user:
+            raise HTTPException(400, "Username already registered")
+        # Check if email exists
+        existing_email = session.exec(select(User).where(User.email == user_data.email)).first()
+        if existing_email:
+            raise HTTPException(400, "Email already registered")
+        # Hash password with proper handling for bcrypt
+        # bcrypt has a 72-byte limit, so we hash it properly
+        hashed_password = hash_password(user_data.password)
+        user = User(
+            username=user_data.username,
+            email=user_data.email,
+            hashed_password=hashed_password,
+            full_name=user_data.full_name,
+            role=user_data.role
+        )
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return {
+            "message": "User registered successfully", 
+            "user_id": user.id,
+            "username": user.username,
+            "role": user.role
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Registration error: {e}")
+        raise HTTPException(500, f"Registration failed: {str(e)}")
