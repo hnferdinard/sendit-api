@@ -6,13 +6,4 @@
     plan: free
     region: oregon
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: ALGORITHM
-        value: HS256
-      - key: MAX_UPLOAD_SIZE
-        value: 5242880
-      - key: PYTHON_VERSION
-        value: 3.11.0
+    startCommand: python main.py
