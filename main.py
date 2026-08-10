@@ -1,19 +1,24 @@
-﻿from fastapi import FastAPI, HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer
+﻿from fastapi import FastAPI, HTTPException, Depends, Form
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 import os
 import uvicorn
-# Simple app without complex dependencies for Render
+from typing import Optional
+from fastapi.encoders import jsonable_encoder
 app = FastAPI(title="SendIt API", version="1.0.0")
-# Simple models
+# Models
 class UserRegister(BaseModel):
     username: str
     email: str
     password: str
     full_name: str
     role: str = "staff"
-# Store users in memory (for Render demo)
+class UserLogin(BaseModel):
+    username: str
+    password: str
+# In-memory storage
 users_db = {}
+tokens_db = {}
 @app.get("/")
 @app.get("/health")
 def health_check():
@@ -34,18 +39,34 @@ def register(user: UserRegister):
         "role": user.role
     }
 @app.post("/login")
-def login(username: str, password: str):
+async def login(
+    username: Optional[str] = Form(None),
+    password: Optional[str] = Form(None),
+    user_data: Optional[UserLogin] = None
+):
+    # Check if JSON data was sent
+    if user_data:
+        username = user_data.username
+        password = user_data.password
+    # If no data provided, try to get from form
+    if not username and not password:
+        raise HTTPException(400, "Username and password required")
     if username not in users_db:
         raise HTTPException(401, "Invalid credentials")
     if users_db[username]["password"] != password:
         raise HTTPException(401, "Invalid credentials")
+    token = f"token-{username}-{os.urandom(8).hex()}"
+    tokens_db[token] = username
     return {
-        "access_token": f"fake-token-{username}",
+        "access_token": token,
         "token_type": "bearer"
     }
 @app.get("/documents")
 def list_documents():
-    return {"message": "Documents endpoint - working!"}
+    return {
+        "message": "Documents endpoint - working!",
+        "documents": []
+    }
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
