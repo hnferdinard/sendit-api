@@ -7,3 +7,10 @@
     region: oregon
     buildCommand: pip install -r requirements.txt
     startCommand: python main.py
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: MAX_UPLOAD_SIZE
+        value: 5242880
