@@ -8,20 +8,16 @@ class Document(SQLModel, table=True):
     file_size: int
     file_type: str
     status: str = Field(default="uploaded")
-    version: int = Field(default=1)  # <-- This is the version field
-    # Location data
+    version: int = Field(default=1)
     city: str = Field(index=True)
     country: str = Field(default="Kenya")
-    # Weather data
     weather_data: Optional[str] = Field(default=None)
     weather_fetched_at: Optional[datetime] = None
-    # Metadata
     description: Optional[str] = None
     uploader_id: int = Field(foreign_key="user.id")
     uploader: "User" = Relationship(back_populates="documents")
     uploaded_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    # File path
     file_path: str
 class DocumentCreate(SQLModel):
     city: str = Field(min_length=2, max_length=100)
