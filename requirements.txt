@@ -8,8 +8,4 @@ python-jose[cryptography]
 httpx
 aiofiles
 slowapi
-pytest
-pytest-cov
-pytest-asyncio
 psutil
-locust
