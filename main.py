@@ -451,3 +451,12 @@ async def get_metrics(current_user: dict = Depends(get_current_admin)):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to SendIt API! 🚀",
+        "docs": "/docs",
+        "health": "/health",
+        "version": "1.0.0",
+        "status": "API is live and running"
+    }
