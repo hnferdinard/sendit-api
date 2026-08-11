@@ -15,6 +15,252 @@ app = FastAPI(
     version="1.0.0",
     description="📄 Document Management & Enrichment Service"
 )
+# ============ PORTFOLIO PAGE ============
+@app.get("/", response_class=HTMLResponse)
+async def portfolio():
+    html_content = """
+    <html>
+    <head>
+        <title>Fednard Irungu Mwangi - Backend Portfolio</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                margin: 40px;
+                background: #f5f5f5;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            h1 {
+                color: #2c3e50;
+                border-bottom: 3px solid #3498db;
+                padding-bottom: 10px;
+            }
+            .student-info {
+                background: #e8f4fd;
+                padding: 15px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            .student-info strong {
+                color: #2c3e50;
+            }
+            .admission {
+                font-size: 1.2em;
+                color: #2980b9;
+                font-weight: bold;
+            }
+            .assignment {
+                margin: 12px 0;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                border-left: 4px solid #3498db;
+                transition: all 0.3s ease;
+            }
+            .assignment:hover {
+                background: #e8f4fd;
+                transform: translateX(5px);
+            }
+            .assignment a {
+                color: #0366d6;
+                text-decoration: none;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .assignment a:hover {
+                text-decoration: underline;
+            }
+            .badge {
+                display: inline-block;
+                background: #3498db;
+                color: white;
+                padding: 2px 10px;
+                border-radius: 12px;
+                font-size: 0.8em;
+                margin-right: 10px;
+                min-width: 70px;
+                text-align: center;
+            }
+            .lesson-topic {
+                color: #7f8c8d;
+                font-size: 0.9em;
+                margin-left: 10px;
+            }
+            .repo-name {
+                color: #0366d6;
+                font-size: 0.8em;
+                margin-left: auto;
+                background: #f0f0f0;
+                padding: 2px 10px;
+                border-radius: 12px;
+            }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                color: #95a5a6;
+                font-size: 0.9em;
+                border-top: 1px solid #ecf0f1;
+                padding-top: 20px;
+            }
+            .live-badge {
+                display: inline-block;
+                background: #22c55e;
+                color: white;
+                padding: 2px 12px;
+                border-radius: 12px;
+                font-size: 0.7em;
+                margin-left: 10px;
+            }
+            .email-link {
+                color: #0366d6;
+                text-decoration: none;
+            }
+            .email-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 Backend Development Portfolio</h1>
+            
+            <div class="student-info">
+                <p><strong>Student Name:</strong> Fednard Irungu Mwangi</p>
+                <p><strong>Admission Number:</strong> <span class="admission">C027-01-0543/2024</span></p>
+                <p><strong>Email:</strong> <a href="mailto:fednard.mwangi24@students.dkut.ac.ke" class="email-link">fednard.mwangi24@students.dkut.ac.ke</a></p>
+            </div>
+
+            <h2>📚 Backend Assignments</h2>
+            <p style="color: #7f8c8d; margin-bottom: 20px;">Click on any assignment to view the complete code on GitHub</p>
+
+            <!-- Lesson 1 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/sendit-api" target="_blank">
+                    <span class="badge">Lesson 1</span>
+                    <span>HTTP & Your First API</span>
+                    <span class="lesson-topic">FastAPI + Uvicorn, HTTP Methods, Status Codes</span>
+                    <span class="repo-name">sendit-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 2 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/sendit-api" target="_blank">
+                    <span class="badge">Lesson 2</span>
+                    <span>Docker - Packaging Your API</span>
+                    <span class="lesson-topic">Containers, Dockerfiles, Docker Compose</span>
+                    <span class="repo-name">sendit-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 3 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/gighub-api" target="_blank">
+                    <span class="badge">Lesson 3</span>
+                    <span>Routing, Parameters & Request Bodies</span>
+                    <span class="lesson-topic">Path Parameters, Query Parameters, Pydantic Validation</span>
+                    <span class="repo-name">gighub-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 4 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/library-api" target="_blank">
+                    <span class="badge">Lesson 4</span>
+                    <span>PostgreSQL & SQLModel - Your First Database</span>
+                    <span class="lesson-topic">ORM, Database Migrations, SQLModel</span>
+                    <span class="repo-name">library-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 5 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/bookstore-api" target="_blank">
+                    <span class="badge">Lesson 5</span>
+                    <span>CRUD Operations</span>
+                    <span class="lesson-topic">Create, Read, Update, Delete with Error Handling</span>
+                    <span class="repo-name">bookstore-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 6 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/TechVault-api" target="_blank">
+                    <span class="badge">Lesson 6</span>
+                    <span>Error Handling & Validation</span>
+                    <span class="lesson-topic">HTTPException, Custom Validators, Global Handlers</span>
+                    <span class="repo-name">TechVault-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 7 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/HealthTrack-api" target="_blank">
+                    <span class="badge">Lesson 7</span>
+                    <span>User Authentication - JWT & Password Hashing</span>
+                    <span class="lesson-topic">JWT Tokens, bcrypt, Login/Register Endpoints</span>
+                    <span class="repo-name">HealthTrack-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 8 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/clinicguard-api" target="_blank">
+                    <span class="badge">Lesson 8</span>
+                    <span>Authorization & Rate Limiting</span>
+                    <span class="lesson-topic">RBAC, Dependency Injection, Rate Limiting</span>
+                    <span class="repo-name">clinicguard-api</span>
+                </a>
+            </div>
+
+            <!-- Lesson 9 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/sendit-api" target="_blank">
+                    <span class="badge">Lesson 9</span>
+                    <span>File Uploads & External APIs</span>
+                    <span class="lesson-topic">File Validation, httpx, Environment Variables</span>
+                    <span class="repo-name">sendit-api</span>
+                    <span class="live-badge">🟢 Live</span>
+                </a>
+            </div>
+
+            <!-- Lesson 10 -->
+            <div class="assignment">
+                <a href="https://github.com/hnferdinard/sendit-api" target="_blank">
+                    <span class="badge">Lesson 10</span>
+                    <span>Testing & Deployment (Cloud)</span>
+                    <span class="lesson-topic">Pytest, CI/CD, Render Deployment</span>
+                    <span class="repo-name">sendit-api</span>
+                    <span class="live-badge">🟢 Live</span>
+                </a>
+            </div>
+
+            <div class="footer">
+                <p>🚀 Deployed on Render | 📅 Last Updated: August 2026</p>
+                <p style="font-size: 0.8em;">Click on any assignment link to view the complete source code on GitHub</p>
+                <p style="font-size: 0.8em; margin-top: 5px;">
+                    <span style="color: #22c55e;">●</span> Live API: 
+                    <a href="https://sendit-api-pazt.onrender.com" style="color: #0366d6; text-decoration: none;">
+                        sendit-api-pazt.onrender.com
+                    </a>
+                </p>
+                <p style="font-size: 0.8em; margin-top: 5px; color: #22c55e;">
+                    ✅ All assignments completed and deployed
+                </p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
 # ============ MOUNT STATIC FILES ============
 # This serves your background image from the static folder
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -451,12 +697,3 @@ async def get_metrics(current_user: dict = Depends(get_current_admin)):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
-@app.get("/")
-async def root():
-    return {
-        "message": "Welcome to SendIt API! 🚀",
-        "docs": "/docs",
-        "health": "/health",
-        "version": "1.0.0",
-        "status": "API is live and running"
-    }
